@@ -3,9 +3,13 @@ class CH::Puzzle::MagicWatch::MagicWatch
   class NotEnoughQuestions     < RuntimeError ; end
   class EncapsulationViolation < RuntimeError ; end
   def self.encapsulation_signature ; /\`ask'/ ; end
-  def self.encapsulation_levels    ; caller.select {|c| c =~ encapsulation_signature }.length ; end
-  def self.encapsulation_check     ; raise EncapsulationViolation, "You can't look directly" if encapsulation_levels.zero? ; end
-  def      encapsulation_check     ; self.class.encapsulation_check ; end
+  def self.encapsulation_level   ; caller.select {|c| c =~ encapsulation_signature }.length ; end
+  def self.encapsulation_check   ; !encapsulation_level.zero? ; end
+  def self.enforce_encapsulation ; raise EncapsulationViolation, "You can't look directly"                  unless encapsulation_check ; end
+  def self.refute_encapsulation  ; raise EncapsulationViolation, "You cannot modify anything while asking"  if     encapsulation_check ; end
+  def      encapsulation_level   ; self.class.encapsulation_level   ; end
+  def      enforce_encapsulation ; self.class.enforce_encapsulation ; end
+  def       refute_encapsulation ; self.class.refute_encapsulation  ; end
 
   def self.truth_values ; [:yellow, :blue]        ; end
   def      truth_values ; self.class.truth_values ; end
@@ -26,13 +30,13 @@ class CH::Puzzle::MagicWatch::MagicWatch
   end
 
   def truth_color
-    @t unless encapsulation_check # not really a conditional...
+    enforce_encapsulation
+    @t
   end
 
   def ask *a
-    raise NotEnoughQuestions, "The watch lies dead, good job" if @questions.zero?
-    nesting_level = caller.select {|c| c =~ /\`ask'/ }.length
-    deducted = @questions -= 1 if nesting_level.zero? || !@free_recursion # the first question always costs, recursive questions may not cost further
+    raise NotEnoughQuestions, "The watch lies dead, good job" if @questions.zero? unless ((encapsulation_level - 1) > 0) && @free_recursion
+    deducted = @questions -= 1 if (encapsulation_level - 1).zero? || !@free_recursion # the first question always costs, recursive questions may not cost further
     answer = yield *a
     raise ImproperQuestion, "Only true/false questions" unless [true, false].include? answer
     answer ? @t : @f

@@ -1,8 +1,8 @@
 class CH::Puzzle::MagicWatch::PrizeCabinet
   class SequenceViolation < RuntimeError ; end
-  def enforce_no_peeking   ; raise SequenceViolation, "can't peek until you guess" unless @guessed ; end
-  def enforce_single_guess ; raise SequenceViolation, "can't guess more than once" if     @guessed ; end
-  def encapsulation_check  ; encapsulator.encapsulation_check ; end
+  def enforce_no_peeking               ; raise SequenceViolation, "can't peek until you guess" unless @guessed ; end
+  def enforce_single_guess             ; raise SequenceViolation, "can't guess more than once" if     @guessed ; end
+  def enforce_no_guessing_while_asking ; refute_encapsulation ; end
 
   def    enforce_encapsulation  ; encapsulator.enforce_encapsulation ; end
   def     refute_encapsulation  ; encapsulator.refute_encapsulation  ; end
@@ -47,6 +47,7 @@ class CH::Puzzle::MagicWatch::PrizeCabinet
   end
 
   def guess n
+    enforce_no_guessing_while_asking
     enforce_single_guess
     raise ArgumentError, "guess what?" unless n.respond_to? :to_i
     @guessed = true
@@ -54,9 +55,9 @@ class CH::Puzzle::MagicWatch::PrizeCabinet
   end
 
   # convenience methods for the doors
-  def first  ; @rooms[ 0] unless encapsulation_check ; end
-  def middle ; @rooms[ 1] unless encapsulation_check ; end
-  def last   ; @rooms[-1] unless encapsulation_check ; end
+  def first  ; enforce_encapsulation ; @rooms[ 0] ; end
+  def middle ; enforce_encapsulation ; @rooms[ 1] ; end
+  def last   ; enforce_encapsulation ; @rooms[-1] ; end
 
   # don't leak info
   def inspect
