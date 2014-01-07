@@ -12,6 +12,33 @@ module CH
         def self.play options = {}, &b
           new(options).play &b
         end
+
+        def self.test options = {}, &b
+          cabinet_size = options.delete(:cabinet_size) || PrizeCabinet.default_size
+          truth_values = options.delete(:truth_values) || MagicWatch.truth_values
+          num_tests = cabinet_size * 2
+          total = 0
+          truth_values.each {|color|
+            0.upto(cabinet_size - 1) {|door_number|
+              result = nil
+              begin
+                Timeout.timeout(1) {
+                  result = play :truth_value => color, :prize_location => door_number, &b
+                }
+              rescue TimeoutError
+                print "Strategy took too long to run. "
+              rescue RuntimeError => e
+                print "Strategy raised #{e.inspect}. "
+              end
+              if result
+                total += 1
+              else
+                puts "Failed to handle case: prize_location: #{door_number}, truth_value: #{color}"
+              end
+            }
+          }
+          total/1r / num_tests
+        end
   
         # define a 'proposition', a method, from a block (remains a closure) on the game instance - for writing easier queries in game mode
         # 
