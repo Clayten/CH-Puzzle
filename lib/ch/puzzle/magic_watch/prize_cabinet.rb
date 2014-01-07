@@ -4,15 +4,40 @@ class CH::Puzzle::MagicWatch::PrizeCabinet
   def enforce_single_guess ; raise SequenceViolation, "can't guess more than once" if     @guessed ; end
   def encapsulation_check  ; encapsulator.encapsulation_check ; end
 
-  attr_reader :encapsulator, :size, :guessed
+  def    enforce_encapsulation  ; encapsulator.enforce_encapsulation ; end
+  def     refute_encapsulation  ; encapsulator.refute_encapsulation  ; end
+
+  def self.default_encapsulator ; MagicWatch ; end
+  def self.default_size         ; 3          ; end
+  def self.default_bad_prize    ; :goat      ; end
+  def self.default_good_prize   ; :car       ; end
+  def      default_encapsulator ; self.class.default_encapsulator ; end
+  def      default_size         ; self.class.default_size         ; end
+  def      default_bad_prize    ; self.class.default_bad_prize    ; end
+  def      default_good_prize   ; self.class.default_good_prize   ; end
+
+  attr_reader :encapsulator, :guessed, :bad_prize, :good_prize
+
+  def prizes ; [good_prize, bad_prize] ; end
+  def size ; @rooms.length ; end
 
   def initialize options = {}
-    @encapsulator = options.delete(:encapsulator) || self.class.encapsulator
-    @size         = options.delete(:size)       || 3
-      bad_prize   = options.delete( :bad_prize) || :goat
-     good_prize   = options.delete(:good_prize) || :car
-    @rooms = [bad_prize] * size
-    @rooms[rand size] = good_prize
+    @encapsulator  = options.delete(:encapsulator) || default_encapsulator
+    @bad_prize     = options.delete(:bad_prize )   || default_bad_prize
+    @good_prize    = options.delete(:good_prize)   || default_good_prize
+    size           = options.delete(:size)         || default_size
+    prize_location = options.delete(:prize_location)
+    layout         = options.delete(:layout)
+    @trial_mode = !!(layout || prize_location) # has this been rigged for a trial?
+    if layout
+      raise ArgumentError, "specifying a layout and a prize_location doesn't make any sense" if layout && prize_location
+      raise ArgumentError, "specifying a layout and a size is either redundant or wrong"     if layout && size
+      @rooms = layout[0...size] + ([bad_prize] * [(size - layout.size), 0].min)
+    else
+      raise ArgumentError, "Room ##{prize_location} is outside the cabinet" if prize_location and prize_location < 0 || prize_location >= size # note 'and'
+      @rooms = [bad_prize] * size
+      @rooms[prize_location || rand(size)] = good_prize
+    end
     @guessed = false
   end
 
