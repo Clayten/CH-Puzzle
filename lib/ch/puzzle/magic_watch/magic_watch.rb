@@ -43,6 +43,6 @@ class CH::Puzzle::MagicWatch::MagicWatch
 
   # don't leak info
   def inspect
-    "<#{self.class.name}:#{object_id} @questions=#{@questions}, @free_recursion=#{@free_recursion}>"
+    "<#{self.class.name}:#{object_id} #{'trial-mode ' if @trial_mode}@questions=#{@questions}, @free_recursion=#{@free_recursion}>"
   end
 end

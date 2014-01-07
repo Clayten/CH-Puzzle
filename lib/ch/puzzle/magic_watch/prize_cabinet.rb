@@ -60,6 +60,6 @@ class CH::Puzzle::MagicWatch::PrizeCabinet
 
   # don't leak info
   def inspect
-    "<#{self.class.name}:#{self.class.object_id} #{@rooms.collect {|c| s = "[%4s]" % (@guessed ? c : '----') }.join ' '}>"
+    "<#{self.class.name}:#{self.class.object_id} #{'trial-mode ' if @trial_mode}#{@rooms.collect {|c| s = "[%4s]" % (@guessed ? c : '----') }.join ' '}>"
   end
 end
