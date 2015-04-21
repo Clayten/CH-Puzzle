@@ -2,6 +2,8 @@ require 'test/unit'
 require 'shoulda-context'
 require 'ch/puzzle/magic_watch/prize_cabinet'
 
+$LOAD_PATH << Dir.pwd
+
 class TestCabinet < Test::Unit::TestCase
   class EncapsulationViolation < RuntimeError ; end
 

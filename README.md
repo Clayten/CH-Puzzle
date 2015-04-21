@@ -1,4 +1,6 @@
-# CH::Puzzle::MagicWatch
+# Interactive MagicWatch puzzle and solution kit
+
+## The MagicWatch puzzle
 
 This gem implements the Magic Watch puzzle describe at http://wiki.xkcd.com/irc/Puzzles#Magic_Watch
 
@@ -7,6 +9,8 @@ You have a magic watch with flawlessly and omnisciently answers two true-or-fals
 You have been chosen to participate in a game-show where you will have one guess to pick the correct door of three (randomly chosen each game), winning a car instead of a goat.
 
 Use your magic watch to increase your odds of winning - how good can you make your odds?
+
+## CH::Puzzle::MagicWatch
 
 The DoorGuesser.play method creates a new prize-cabinet and magic watch, if a block is passed it is called with these arguments and its final value (0..2) is used as a guess
 

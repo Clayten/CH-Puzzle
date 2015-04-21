@@ -1,3 +1,14 @@
-# require "ch/puzzle/magic_watch/version"
-$LOAD_PATH << (lp = File.dirname(File.realdirpath(__FILE__)))         # FIXME
-%w(version magic_watch prize_cabinet guessers/non-recursive).each {|lib| fn = "#{lp}/magic_watch/#{lib}.rb" ; "Loading #{fn}" ; load fn } # using load instead of require for reloadability
+module CH
+  module Puzzle
+    module MagicWatch
+      LIBS rescue LIBS = %w(version magic_watch prize_cabinet guessing_game guessers/non-recursive)
+
+      def self.dirname ; self.name.gsub(/::/,'/').gsub(/([a-z])([A-Z])/,'\1_\2').downcase ; end
+      def self.libdir ; File.join(File.dirname(File.realdirpath(__FILE__)),'..','..') ; end
+      def self.reload ; load __FILE__ ; Dir.glob("#{libdir}/#{dirname}/**/*.rb").each {|f| load f } ; end
+
+      $LOAD_PATH << libdir unless $LOAD_PATH.include? libdir
+      LIBS.each {|l| require "#{dirname}/#{l}" }
+    end
+  end
+end
