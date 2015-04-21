@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    ch-puzzle-magic_watch (0.0.1)
+    ch-puzzle-magic_watch (0.0.2)
       pry (~> 0.10)
       pry-doc (~> 0.6)
       pry-nav (~> 0.2)
