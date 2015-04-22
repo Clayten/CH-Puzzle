@@ -21,17 +21,17 @@ $guesser = lambda {|game, watch|
 
 # obsolete form using lambdas as an example
 # $dgl = lambda {|game, watch|
-# 
+#
 #   door1 = lambda { game.first  == :car }
 #   door2 = lambda { game.middle == :car }
 #   door3 = lambda { game.last   == :car }
-# 
+#
 #   truth_is_yellow = lambda { watch.truth_color == :yellow }
 #   truth_is_blue   = lambda { watch.truth_color == :blue   }
-# 
+#
 #    first_color = watch.ask { ( door1.call                && truth_is_yellow.call) || (               door3.call  && truth_is_blue.call) }
 #   second_color = watch.ask { ((door1.call || door2.call) && truth_is_yellow.call) || ((door2.call || door3.call) && truth_is_blue.call) }
-# 
+#
 #   if first_color != second_color
 #     1
 #   elsif first_color == :yellow

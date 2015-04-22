@@ -1,6 +1,6 @@
 require 'test/unit'
 require 'shoulda-context'
-require 'ch/puzzle/magic_watch/prize_cabinet'
+require 'ch/puzzles/magic_watch/cabinet'
 
 $LOAD_PATH << Dir.pwd
 
@@ -15,7 +15,7 @@ class TestCabinet < Test::Unit::TestCase
   end
 
   def setup
-    @class = CH::Puzzle::MagicWatch::PrizeCabinet
+    @class = CH::Puzzles::MagicWatch::PrizeCabinet
     @pc = @class.new :encapsulator => :none
   end
 

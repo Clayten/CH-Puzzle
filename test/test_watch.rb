@@ -1,11 +1,11 @@
 require 'test/unit'
 require 'shoulda-context'
-require 'ch/puzzle/magic_watch/magic_watch'
+require 'ch/puzzles/magic_watch/watch'
 
 class TestWatch < Test::Unit::TestCase
 
   def setup
-    @class = CH::Puzzle::MagicWatch::MagicWatch
+    @class = CH::Puzzles::MagicWatch::MagicWatch
     @mw = @class.new
   end
 

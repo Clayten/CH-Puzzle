@@ -1,88 +1,6 @@
-module CH::Puzzle
-  class Puzzle
-    class SequenceViolation < RuntimeError ; end
-    include Resettable
-    private
-
-    attr_reader :encapsulator
-
-    def self.default_encapsulator ; Oracle ; end
-    def      default_encapsulator ; self.class.default_encapsulator ; end
-
-    def    enforce_encapsulation  ; encapsulator.send :enforce_encapsulation ; end
-    def     refute_encapsulation  ; encapsulator.send :refute_encapsulation  ; end
-
-    def enforce_no_guessing_while_asking ; refute_encapsulation ; end
-
-    def enforce_single_guess             ; raise SequenceViolation, "can't guess more than once" if     @guessed ; end
-
-    def state ; nil ; end
-
-    public
-
-    def self.states ; [] ; end
-    def      states ; self.class.states ; end
-
-    def guess x
-      raise ArgumentError, "guess what?" unless states.include? x
-      enforce_no_guessing_while_asking
-      enforce_single_guess
-      @guessed = true
-      x == state
-    end
-
-    def trial_mode ; false ; end
-
-    def initialize options = {}
-      @encapsulator  = options.delete(:encapsulator) || default_encapsulator
-      reset
-    end
-
-    def inspect s = '...'
-      "<#{self.class.name}:#{self.class.object_id} #{'trial-mode ' if trial_mode}#{s}>"
-    end
-  end
-end
-
-module CH::Puzzle::Liars
-  class Road < CH::Puzzle::Puzzle
-    private
-
-    def state ; @direction ; end
-
-    public
-
-    def self.directions ; [:left, :right] ; end
-    def self.states ; directions ; end
-
-    def reset
-      super
-      if nil != @forced_direction
-        raise ArgumentError, "The road doesn't fork #{@forced_direction}" unless states.include? @forced_direction
-        @direction = @forced_direction
-      else
-        @direction = self.class.directions.shuffle.first
-      end
-      @guessed = false
-      nil
-    end
-
-    def direction
-      enforce_encapsulation
-      @direction
-    end
-
-    def trial_mode ; nil != forced_direction ; end
-
-    def initialize options = {}
-      @forced_direction = options.delete(:direction) if options.include? :direction
-      super
-    end
-  end
-end
-
-module CH::Puzzle::MagicWatch
-  class PrizeCabinet < CH::Puzzle::Puzzle
+require 'ch/puzzles/items'
+module CH::Puzzles::MagicWatch
+  class PrizeCabinet < CH::Puzzles::Items
     private
     def self.default_size         ; 3          ; end
     def self.default_bad_prize    ; :goat      ; end
@@ -93,8 +11,8 @@ module CH::Puzzle::MagicWatch
 
     def state ; @rooms.index good_prize ; end
 
-    attr_reader :forced_prize_location, :forced_layout 
-    
+    attr_reader :forced_prize_location, :forced_layout
+
     public
 
     attr_reader :size, :guessed, :prizes, :bad_prize, :good_prize

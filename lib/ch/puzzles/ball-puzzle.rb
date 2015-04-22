@@ -27,4 +27,4 @@
 # Each piece is connected to the five nearest. The top and bottom are, respectively, each connected to their entire neighboring row.
 # Orange, for example, is connected to Blue, Purle, Green, LPurple, and Black.
 #
-# 
+#

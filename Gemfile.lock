@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    ch-puzzle-magic_watch (0.0.2)
+    ch-puzzles (0.0.3)
       pry (~> 0.10)
       pry-doc (~> 0.6)
       pry-nav (~> 0.2)
@@ -30,6 +30,6 @@ PLATFORMS
 
 DEPENDENCIES
   bundler (~> 1.3)
-  ch-puzzle-magic_watch!
+  ch-puzzles!
   rake
   shoulda-context

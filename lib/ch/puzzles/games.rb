@@ -1,11 +1,11 @@
 require 'timeout'
-module CH::Puzzle
-  class Game
+module CH::Puzzles
+  class Games
     private
-    def self.default_oracle_type ; Oracle ; end
+    def self.default_oracle_type ; CH::Puzzles::Oracles ; end
     def              oracle_type ; self.class.default_oracle_type ; end
 
-    def self.default_puzzle_type ; Puzzle ; end
+    def self.default_puzzle_type ; CH::Puzzles::Items ; end
     def              puzzle_type ; self.class.default_puzzle_type ; end
 
     def check answer ; raise ArgumentError, "Return value of play block isn't in known states: #{states}, #{answer.inspect}" unless states.include? answer ; end
@@ -64,7 +64,7 @@ module CH::Puzzle
     def guess *a ; @success = puzzle.guess *a ; end
 
     # define a 'proposition', a method, from a block (which remains a closure) on the game instance - for writing easier and more reusable queries
-    # 
+    #
     # GuessingGame.new {|puzzle,oracle|
     #   prop :door_one_has_a_goat do puzzle.room1 == :goat end
     #   first_answer = w.ask { door_one_has_a_goat }
@@ -85,50 +85,3 @@ module CH::Puzzle
     end
   end
 end
-
-module CH::Puzzle::Liars
-  class UnreliableVillagerGame < CH::Puzzle::Game
-    attr_reader :villager, :road
-    def state_items ; [ villager, road ] ; end
-
-    def direction
-      road.direction
-    end
-
-    def initialize options = {}
-      super
-      @villager = Villager.new
-      @road     = Road.new
-    end
-  end
-end
-
-module CH::Puzzle::MagicWatch
-  class GuessingGame < CH::Puzzle::Game
-    private
-
-    def state ; puzzle.send :state ; end
-    def check n ; (0...puzzle.size) === n ; end
-
-    def self.options_from_args color, door_number, &b
-      { :truth_value => color, :prize_location => door_number }
-    end
-
-    public
-
-    def state_items ; [ oracle, puzzle ] ; end
-
-    def initialize options = {}
-      super
-      options[:resettable] = false
-      puzzle options.dup
-    end
-
-    class RecursiveGuessingGame < GuessingGame
-      def initialize options = {}
-        super options.merge(:free_recursion => true)
-      end
-    end
-  end
-end
-
