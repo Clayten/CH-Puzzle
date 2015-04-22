@@ -1,7 +1,7 @@
 module CH
   module Puzzle
     module MagicWatch
-      VERSION = "0.0.2"
+      VERSION rescue VERSION = "0.0.3"
     end
   end
 end
