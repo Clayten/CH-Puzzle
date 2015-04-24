@@ -2,13 +2,12 @@ require 'timeout'
 module CH::Puzzles
   class Games
     private
+
     def self.default_oracle_type ; CH::Puzzles::Oracles ; end
     def              oracle_type ; self.class.default_oracle_type ; end
 
     def self.default_puzzle_type ; CH::Puzzles::Items ; end
     def              puzzle_type ; self.class.default_puzzle_type ; end
-
-    def check answer ; raise ArgumentError, "Return value of play block isn't in known states: #{states}, #{answer.inspect}" unless states.include? answer ; end
 
     # When you're given scalar args, what options do these represent? - must be the same order as state_items
     def self.options_from_args *a ; {} ; end
@@ -77,11 +76,18 @@ module CH::Puzzles
     def play pr = nil, &b
       b ||= pr if pr.is_a? Proc
       answer = instance_exec puzzle, oracle, &b
-      check answer
       guess answer
     end
 
+    def trial_mode ; false ; end
+
     def initialize options = {}
+      oracle options
+      puzzle options
+    end
+
+    def inspect s = ''
+      "<#{self.class.name}:#{object_id} #{'trial-mode ' if trial_mode}#{state_items.collect(&:inspect).join(', ')}#{" #{s}" unless s.empty?}>"
     end
   end
 end

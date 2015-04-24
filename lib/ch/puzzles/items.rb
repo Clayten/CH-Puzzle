@@ -19,17 +19,21 @@ module CH::Puzzles
 
     def state ; nil ; end
 
+    def check answer ; raise ArgumentError, "Return value of play block (#{answer.inspect}) isn't in known states: #{states}" unless states.include? answer ; end
+
     public
+
+    attr_reader :guessed
 
     def self.states ; [] ; end
     def      states ; self.class.states ; end
 
-    def guess x
-      raise ArgumentError, "guess what?" unless states.include? x
+    def guess answer
+      check answer
       enforce_no_guessing_while_asking
       enforce_single_guess
       @guessed = true
-      x == state
+      answer == state
     end
 
     def trial_mode ; false ; end

@@ -9,24 +9,27 @@ module CH::Puzzles::MagicWatch
     def state ; puzzle.send :state ; end
     def check n ; (0...puzzle.size) === n ; end
 
-    def self.options_from_args color, door_number, &b
+    def self.options_from_args color, door_number
       { :truth_value => color, :prize_location => door_number }
     end
 
     public
 
-    def state_items ; [ oracle, puzzle ] ; end
+    alias watch   oracle
+    alias cabinet puzzle
+
+    def state_items ; [ watch, cabinet ] ; end
 
     def initialize options = {}
       super
       options[:resettable] = false
-      puzzle options.dup
+      puzzle options
     end
+  end
 
-    class RecursiveGuessingGame < GuessingGame
-      def initialize options = {}
-        super options.merge(:free_recursion => true)
-      end
+  class RecursiveGuessingGame < GuessingGame
+    def initialize options = {}
+      super options.merge(:free_recursion => true)
     end
   end
 end

@@ -25,6 +25,7 @@ module CH::Puzzles
       reset_check
       count_reset        unless initializing?
       puts reset_message unless initializing?
+      @guessed = false if nil != @guessed # don't needlessly set the variable...
     end
 
     public

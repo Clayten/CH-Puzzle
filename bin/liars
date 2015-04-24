@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 $LOAD_PATH << File.realdirpath(File.join(File.dirname(__FILE__),'..','lib'))
-require 'ch/puzzles/magic_watch'
+require 'ch/puzzles/liars'
 require 'pry'
 
-CH::Puzzles::MagicWatch.pry
+CH::Puzzles::Liars.pry
