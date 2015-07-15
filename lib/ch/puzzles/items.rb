@@ -3,16 +3,7 @@ module CH::Puzzles
   class Items
     class SequenceViolation < RuntimeError ; end
     include CH::Puzzles::Resettable
-    private
-
-    attr_reader :encapsulator
-
-    def self.default_encapsulator ; Oracles ; end
-    def      default_encapsulator ; self.class.default_encapsulator ; end
-
-    def    enforce_encapsulation  ; encapsulator.send :enforce_encapsulation ; end
-    def     refute_encapsulation  ; encapsulator.send :refute_encapsulation  ; end
-
+    include CH::Puzzles::Encapsulated
     def enforce_no_guessing_while_asking ; refute_encapsulation ; end
 
     def enforce_single_guess             ; raise SequenceViolation, "can't guess more than once" if     @guessed ; end
@@ -27,6 +18,11 @@ module CH::Puzzles
 
     def self.states ; [] ; end
     def      states ; self.class.states ; end
+
+    def reset
+      super
+      reset_state
+    end
 
     def guess answer
       check answer

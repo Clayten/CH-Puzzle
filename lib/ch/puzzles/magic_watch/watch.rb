@@ -1,14 +1,8 @@
 require 'ch/puzzles/oracles'
 module CH::Puzzles::MagicWatch
   class MagicWatch < CH::Puzzles::Oracles
-    class NotEnoughQuestions     < RuntimeError ; end
-    private
-
-    public
-
-    def self.truth_values ; [:yellow, :blue] ; end
-
-    def resettable ; (@resettable != nil) ? @resettable : true ; end
+    has_attribute :truth_color,         [:blue, :yellow], wraps: :truth_value
+    has_attribute :daily_questions,                       wraps: :available_questions
 
     attr_reader :daily_questions, :remaining_questions, :free_recursion
 
@@ -16,12 +10,12 @@ module CH::Puzzles::MagicWatch
 
     def reset
       super
-      if @forced_truth_color
-        raise ArgumentError, "The truth value must be one of #{truth_values.inspect}" unless truth_values.include? @forced_truth_color
-        @t, @f = @forced_truth_color, truth_values.find {|tv| tv != @forced_truth_color }
-      else
-        @t, @f = truth_values.shuffle
-      end
+      # if @forced_truth_color
+      #   raise ArgumentError, "The truth value must be one of #{truth_values.inspect}" unless truth_values.include? @forced_truth_color
+      #   @t, @f = @forced_truth_color, truth_values.find {|tv| tv != @forced_truth_color }
+      # else
+      #   @t, @f = truth_values.shuffle
+      # end
       @remaining_questions = @daily_questions
     end
 
@@ -43,6 +37,7 @@ module CH::Puzzles::MagicWatch
     def trial_mode ; nil != @forced_truth_color ; end
 
     def initialize options = {}
+      p [:init, self, options]
       @forced_truth_color     = options.delete(:forced_truth_color) if options.include? :forced_truth_color
       @resettable      = options.include?(:resettable    ) ? options.delete(:resettable)     : true
       @free_recursion  = options.include?(:free_recursion) ? options.delete(:free_recursion) : false

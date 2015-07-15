@@ -2,27 +2,28 @@ require 'ch/puzzles/utils'
 module CH::Puzzles
   class Oracles
     class ImproperQuestion       < ArgumentError ; end
-    class EncapsulationViolation < RuntimeError ; end
-
-    include CH::Puzzles::Resettable
-
-    private
-
-    def self.encapsulation_signature ; /\`ask'/ ; end
-    def self.encapsulation_level   ; caller.select {|c| c =~ encapsulation_signature }.length ; end
-    def self.encapsulation_check   ; !encapsulation_level.zero? ; end
-    def self.enforce_encapsulation ; raise EncapsulationViolation, "You can't look directly"                  unless encapsulation_check ; end
-    def self.refute_encapsulation  ; raise EncapsulationViolation, "You cannot modify anything while asking"  if     encapsulation_check ; end
-    def      encapsulation_level   ; self.class.encapsulation_level   ; end
-    def      enforce_encapsulation ; self.class.enforce_encapsulation ; end
-    def       refute_encapsulation ; self.class.refute_encapsulation  ; end
+    class NotEnoughQuestions     < RuntimeError ; end
 
     public
+
+    extend  CH::Puzzles
+    utilize CH::Puzzles::Resettable
+    utilize CH::Puzzles::Encapsulator
+    utilize CH::Puzzles::Stateful
+
+    has_attribute :truth_color,         [:blue, :yellow], hidden: true,  locked: true
+    has_attribute :available_questions, [ 2],             hidden: false, locked: true
+    alias daily_questions available_questions
 
     def self.truth_values ; [true, false]        ; end
     def      truth_values ; self.class.truth_values ; end
     def self.states ; truth_values ; end
     def      states ; self.class.states ; end
+
+    def reset
+      super
+      reset_state
+    end
 
     def truth_value
       enforce_encapsulation
@@ -38,6 +39,7 @@ module CH::Puzzles
     def trial_mode ; false ; end
 
     def initialize options = {}
+      super
       @t, @f = truth_values
       reset
     end
