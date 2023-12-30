@@ -1,0 +1,29 @@
+> cabinet, watch = PrizeCabinet.new, MagicWatch.new
+=> [
+  <CH::Puzzle::MagicWatch::PrizeCabinet:440 [----] [----] [----]>,
+  <CH::Puzzle::MagicWatch::MagicWatch:480 @questions=2, free_recursion=false>
+]
+
+> cabinet.peek(1)
+CH::Puzzle::MagicWatch::PrizeCabinet::SequenceViolation: can't peek until you guess
+from /lib/ch/puzzle/magic_watch/prize_cabinet.rb:5:in `enforce_no_peeking'
+
+> cabinet.first
+CH::Puzzle::MagicWatch::MagicWatch::EncapsulationViolation: You can't look directly
+from /lib/ch/puzzle/magic_watch/magic_watch.rb:10:in `enforce_encapsulation'[16] 
+
+> watch.ask { cabinet.first == cabinet.last }
+=> :yellow
+
+> watch.ask { cabinet.middle == cabinet.last }
+=> :yellow
+
+> watch.ask { cabinet.first == cabinet.middle }
+CH::Puzzle::MagicWatch::MagicWatch::NotEnoughQuestions: The watch lies dead, good job
+from /Users/clayten/personal/dev/ch-puzzle-magic_watch/lib/ch/puzzle/magic_watch/magic_watch.rb:42:in `ask'
+
+> cabinet.guess(2)
+=> true
+
+> cabinet
+=> <CH::Puzzle::MagicWatch::PrizeCabinet:440 [goat] [goat] [ car]>
