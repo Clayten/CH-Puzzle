@@ -101,6 +101,8 @@ module CH::Puzzles::Liars
     end
 
     def initialize options = {}
+      @free_recursion  = options.include?(:free_recursion) ? options.delete(:free_recursion) : false
+      @daily_questions = options.include?(:daily_guesses ) ? options.delete(:daily_guesses)  : 1
       super
     end
   end
